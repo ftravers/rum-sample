@@ -1,6 +1,8 @@
-(ns rum-sample.core)
+(ns rum-sample.core
+  (:require [reagent.core :as r]))
 
 (enable-console-print!)
 
-(println "Hello My Friendly Giant!")
+(r/render [:p "Hello World!"] (js/document.getElementById "app"))
+
 
