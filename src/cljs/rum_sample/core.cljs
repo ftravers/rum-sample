@@ -2,5 +2,5 @@
 
 (enable-console-print!)
 
-(println "Hello My Friend!")
+(println "Hello My Friendly Giant!")
 
