@@ -1,10 +1,13 @@
 (ns rum-sample.core
   (:require [rum.core :as rum]))
 
-(rum/defc label [text]
-  [:div {:class "label"} text])
+(def text (atom "abc"))
 
-(rum/mount (label "abc") js/document.body)
+(rum/defc label < rum/reactive
+  [text]
+  [:div {:class "label"} (rum/react text)])
+
+(rum/mount (label text) js/document.body)
 
 
 
