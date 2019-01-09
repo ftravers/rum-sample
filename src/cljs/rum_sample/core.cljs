@@ -1,26 +1,11 @@
 (ns rum-sample.core
-  (:require [reagent.core :as r]
-            [garden.core :refer [css]]))
+  (:require [rum.core :as rum]))
 
-(def css-data
-  (css
-   [[:.grid
-     {:display :grid
-      :grid-template-columns "1fr 1fr"
-      :grid-gap "20px"}]
-    
-    [:.grid :div
-     {:border "1px solid rgb(0,95,100)"}]]))
+(rum/defc label [text]
+  [:div {:class "label"} text])
 
-(defn my-comp []
-  [:div {:class "grid"}
-   [:style css-data]
-   [:div "1"]
-   [:div "2"]
-   [:div "3"]
-   [:div "4"]])
+(rum/mount (label "abc") js/document.body)
 
-(r/render (my-comp) 
-          (js/document.getElementById "app"))
+
 
 
