@@ -1,0 +1,14 @@
+* Technologies:
+
+** Front End
+rum - UI Components
+datascript - datalog DB for front end
+interceptors - (some library???)
+core.async - can help decomplect 
+garden CSS - css in clojurescript
+
+
+** Backend
+interceptors - (some library???)
+core.async - can help decomplect 
+datomic - https://github.com/ftravers/datomic-tutorial

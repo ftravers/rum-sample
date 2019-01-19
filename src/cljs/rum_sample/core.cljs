@@ -1,28 +1,85 @@
 (ns rum-sample.core
   (:require
-   ;; [rum.core :as rum]
+   [rum.core :as rum]
    [datascript.core :as d]))
 
 (def conn (d/create-conn))
 
-(def datoms [{:db/id -1 :name "Bob" :age 30}
-             {:db/id -1 :name "Fenton" :age 45}
-             {:db/id -2 :name "Sally" :age 15}])
+(def datoms [{:db/id 1 :name "Bob" :age 30}
+             {:db/id 3 :name "Fenton" :age 45}
+             {:db/id 2 :name "Sally" :age 15}])
 
-(d/transact! conn datoms)
+(def schema [{:name {:db/unique :db.unique/identity}}])
 
-(def data (d/q '[:find (pull ?e [:name :age])
-                 :where [?e :name "Fenton"]]
-               @conn))
+(d/transact! conn (concat schema datoms))
+(d/transact! conn [{:name "Fenton"}])
 
-(js/console.log (str data))
+(defn get-of-age-users [conn]
+  (d/q '[:find [(pull ?e [:name :age]) ...]
+         :where
+         [?e :age ?a]
+         [(>= ?a 21)]]
+       @conn))
 
-;; (rum/defc users < rum/reactive
-;;   [text]
-;;   [:div {:class "label"} text])
+(defn make-li [users]
+  (map (fn [x] [:li (str (:name x) " - " (:age x))]) users))
 
-;; (rum/mount (users "abc") js/document.body)
+(def my-state (atom "abc"))
 
+(rum/defc blah < rum/reactive []
+  [:p (rum/react my-state)])
 
+(rum/defc of-age-users < rum/reactive
+  [conn]
+  (let [db (rum/react conn)]
+    [:div
+     "Of Age Users:"
+     [:ul
+      (make-li (get-of-age-users conn))]])) 
 
+(rum/mount
+ (blah)
+ ;; (of-age-users conn)
+ js/document.body)
 
+(comment
+  ;; evaluate the following and see the webpage automatically update
+  ;; look at url below to figure out lookup refs...
+  ;; https://github.com/kristianmandrup/datascript-tutorial/blob/master/create_schema.md
+  (d/transact!
+   conn
+   [{:db/id 1 :name "Boob"}
+    {:db/id 1 :age 32}])
+
+  ;; try lookup-ref
+  ;; :message "Lookup ref attribute should be marked
+  ;; as :db/unique: [:db/id 1]", :data
+  ;; {:error :lookup-ref/unique, :entity-id [:db/id 1]}}
+  (let [conn (d/create-conn)]
+    (d/transact! conn [{:name "Bob"}])
+    (d/touch (d/entity (d/db conn) [:name "Bob"])))
+
+  (let [conn (d/create-conn {:name {:db/unique :db.unique/identity}})]
+    (d/transact! conn [{:name "Bob"}])
+    (d/entity (d/db conn) [:name "Bob"]))
+
+  (def conn (d/create-conn {:my/name {:db/unique :db.unique/identity}}))
+  (def conn (d/create-conn))
+  ;; (d/transact! conn {:my/name {:db/unique :db.unique/identity}})
+  (d/transact! conn [{:my/name "Boob" :my/age 2}])
+  (d/transact! conn [{:my/name "Bob" :my/age 3}])
+
+  ;; 
+  (d/touch (d/entity (d/db conn) 1))
+  (d/touch (d/entity (d/db conn) [:my/name "Bob"]))
+  (:datoms (d/db conn))
+  (count (d/q '[:find ?e :where [?e :my/name]]
+              (d/db conn)
+
+              ))
+
+;; => #datascript/DB {:schema #:my{:name
+;; #:db{:unique :db.unique/identity}}, :datoms [[1 :my/age 3
+;; 536870914] [1 :my/name "Bob" 536870913]]}
+
+  )
