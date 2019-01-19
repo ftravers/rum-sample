@@ -1,17 +1,41 @@
 (ns rum-sample.core
   (:require
+   [clojure.core.async :as a]
    [rum.core :as rum]
    [datascript.core :as d]))
+
+(def global-write-queue (a/chan))
+
+(def my-state (atom "abc"))
+
+(a/go (a/>! global-write-queue "def"))
+
+(def sub-to-me-to-listen (a/pub global-write-queue :msg-type))
+
+(def happy-msgs (a/chan))
+
+(a/sub sub-to-me-to-listen :happy happy-msgs)
+
+(comment
+  (a/go (a/>! global-write-queue {:msg-type :happy :msg "hello"}))
+  (a/go (a/>! global-write-queue {:msg-type :sad :msg "bob"}))
+  )
+
+(a/go-loop []
+  (let [msg (a/<! happy-msgs)]
+    (.log js/console (str "Got Msg: " msg))
+    (reset! my-state (:msg msg)))
+  (recur))
 
 (def conn (d/create-conn))
 
 (def datoms [{:db/id 1 :name "Bob" :age 30}
              {:db/id 3 :name "Fenton" :age 45}
-             {:db/id 2 :name "Sally" :age 15}])
+             {:db/id 2 :name "Sally" :age 15}]) 
 
 (def schema [{:name {:db/unique :db.unique/identity}}])
-
 (d/transact! conn (concat schema datoms))
+
 (d/transact! conn [{:name "Fenton"}])
 
 (defn get-of-age-users [conn]
@@ -24,9 +48,8 @@
 (defn make-li [users]
   (map (fn [x] [:li (str (:name x) " - " (:age x))]) users))
 
-(def my-state (atom "abc"))
-
-(rum/defc blah < rum/reactive []
+(rum/defc blah < rum/reactive
+  []
   [:p (rum/react my-state)])
 
 (rum/defc of-age-users < rum/reactive
