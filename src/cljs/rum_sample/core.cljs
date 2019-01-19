@@ -34,6 +34,7 @@
              {:db/id 2 :name "Sally" :age 15}]) 
 
 (def schema [{:name {:db/unique :db.unique/identity}}])
+
 (d/transact! conn (concat schema datoms))
 
 (d/transact! conn [{:name "Fenton"}])
@@ -52,17 +53,44 @@
   []
   [:p (rum/react my-state)])
 
+(defn update-bobs-age [new-age]
+  (a/go (>! global-write-queue
+            {:msg-type :update-bob-age
+             :new-age new-age})))
+
+(let [bobs-age-changes-chan (a/chan)]
+  (a/sub sub-to-me-to-listen
+         :update-bob-age bobs-age-changes-chan)
+  (a/go-loop []
+    (let [msg (a/<! bobs-age-changes-chan)
+          new-age (:new-age msg)]
+      (.log js/console (str "Got Msg: " new-age))
+
+      (d/transact!
+       conn
+       [{:db/id 1 :name "Bob"}
+        {:db/id 1 :age new-age}])
+
+      (reset! my-state (:msg msg)))
+    (recur)))
+
+(rum/defc update-users-age []
+  [:input {:on-blur (fn [x] (update-bobs-age
+                             (-> x .-target .-value)))}]) 
+
 (rum/defc of-age-users < rum/reactive
   [conn]
   (let [db (rum/react conn)]
     [:div
      "Of Age Users:"
      [:ul
-      (make-li (get-of-age-users conn))]])) 
+      (make-li (get-of-age-users conn))]
+     (update-users-age)
+     ]))
 
 (rum/mount
- (blah)
- ;; (of-age-users conn)
+ ;; (blah)
+ (of-age-users conn)
  js/document.body)
 
 (comment
