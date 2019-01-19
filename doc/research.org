@@ -6,9 +6,11 @@ datascript - datalog DB for front end
 interceptors - (some library???)
 core.async - can help decomplect 
 garden CSS - css in clojurescript
-
+transit - sending EDN/JSON, BE<->FE
 
 ** Backend
+https://github.com/ftravers/transit-websocket-server
+HTTPKit - WebSocket BE
 interceptors - (some library???)
 core.async - can help decomplect 
 datomic - https://github.com/ftravers/datomic-tutorial
