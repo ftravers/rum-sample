@@ -1,4 +1,4 @@
-(ns rum-sample.core
+(ns rum-sample.client-comms
   (:require [websocket-server.core :refer [start-ws-server]]))
 
 ;; After we start the server a function is returned
@@ -20,6 +20,4 @@
 (defn stop "Stop websocket server" [] (@ws-server))
 
 (comment
-  (start)
-
-  )
+  (start))

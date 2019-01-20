@@ -16,6 +16,7 @@
    {rum {:mvn/version "0.11.3"}
     garden {:mvn/version "1.3.6"}
     org.clojure/core.async {:mvn/version "0.4.490"}
+    fentontravers/websocket-client {:mvn/version "0.4.8"}
     datascript {:mvn/version "0.17.1"}}
    :extra-paths ["src/cljs" "resources" "target"]}
 
