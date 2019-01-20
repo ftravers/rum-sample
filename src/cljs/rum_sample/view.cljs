@@ -8,12 +8,12 @@
                 (str (:name x) " - " (:age x))])
        users))
 
-(defc update-users-age []
+(defc ui-update-users-age []
   [:input
    {:on-blur #(b/update-bobs-age
                (-> % .-target .-value))}]) 
 
-(defc of-age-users < rum/reactive
+(defc ui-of-age-users < rum/reactive
   [conn]
   (let [db (rum/react conn)]
     [:div
@@ -24,5 +24,5 @@
 
 (defn main-page []
   (rum/mount
-   (of-age-users db/conn)
+   (ui-of-age-users db/conn)
    js/document.body))
