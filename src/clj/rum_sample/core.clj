@@ -18,3 +18,8 @@
     (reset! ws-server (start-ws-server port request-handler-upcase-string))))
 
 (defn stop "Stop websocket server" [] (@ws-server))
+
+(comment
+  (start)
+
+  )
