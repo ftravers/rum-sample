@@ -13,7 +13,7 @@
             msg)))
 
 (defn on-msg-do
-  "attach funtions to messages"
+  "attach funtions to message types"
   [msg-type action-fn]
   (let [msg-chan (a/chan)]
     (a/sub sub-to-me-to-listen msg-type msg-chan)
