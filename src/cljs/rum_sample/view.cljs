@@ -20,7 +20,7 @@
      "Of Age Users:"
      [:ul
       (make-li (b/get-of-age-users))]
-     (update-users-age)]))
+     (ui-update-users-age)]))
 
 (defn main-page []
   (rum/mount

@@ -14,18 +14,9 @@
      :p1-words []
      :p2-words []
      :p1-guessed-words []
-     :p2-guessed-words []})})
-
-(defn process-file-by-lines
-  "Process file reading it line-by-line"
-  ([in-file out-file]
-   (with-open [rdr (io/reader in-file)
-               wtr (io/writer out-file)]
-     (->> (line-seq rdr)
-          (filter #(>= (count %) 4))
-          (drop 150)
-          (take 1000)
-          (run! #(.write wtr (str % "\n")))))))
+     :p2-guessed-words []
+     :guesser-hint {}
+     })})
 
 (defn get-file-words [file-name]
   (-> file-name
@@ -62,8 +53,6 @@
          (assoc :p2-words p2-words)))))
 
 (comment
-  (process-file-by-lines "data/10k-words.txt"
-                         "data/1k-words.txt")
   (init-game)
 
   )
