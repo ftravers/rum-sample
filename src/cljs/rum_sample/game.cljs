@@ -25,7 +25,7 @@
         [[:fill {:color "lightblue"}
           [:rect {:x 0 :y 0 :width 200 :height 200}]]
          [:fill {:color "black"}
-          [:text {:value "Hello, world!"
+          [:text {:value "Text should bounce back and forth! :("
                   :x (:text-x @state)
                   :y (:text-y @state)
                   :dir (:dir @state)
