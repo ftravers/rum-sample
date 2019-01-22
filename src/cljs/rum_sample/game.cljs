@@ -28,7 +28,7 @@
           [:text {:value "Hello, world!"
                   :x (:text-x @state)
                   :y (:text-y @state)
-                  ;; :dir (:dir @state)
+                  :dir (:dir @state)
                   :size 16
                   :font "Georgia"
                   :style :italic}]]])
@@ -50,5 +50,4 @@
     (p/set-screen main-screen)))
 
 (comment
-  (deref state)
-  )
+  (deref state))
