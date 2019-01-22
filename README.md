@@ -1,10 +1,6 @@
 # rum-sample
 
-A Clojure library designed to ... well, that part is up to you.
-
-## Usage
-
-FIXME
+A project to play with some interesting CLJS tech
 
 ## License
 
