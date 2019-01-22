@@ -1,0 +1,7 @@
+* Dev Workflow
+
+If you are not using cider, start a repl in the command line with:
+
+: clj -A:fe:fe-dev:be:fig -b dev -r
+
+(don't type the beginning colon)

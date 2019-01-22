@@ -21,6 +21,8 @@
     datascript {:mvn/version "0.17.1"}}
    :extra-paths ["src/cljs" "resources" "target"]}
 
+  :fig {:main-opts ["-m" "figwheel.main"]}
+
   :fe-dev
   {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.0"}}
    :extra-paths ["test/cljs"]}}}
