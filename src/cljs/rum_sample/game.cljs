@@ -11,8 +11,8 @@
     ;; runs when the screen is first shown
     (on-show [this]
       ;; start the state map with the x and y position of the text we want to display
-      (reset! state {:text-x 20 :text-y 30 :dir :right}))
-
+      (reset! state {:text-x 20 :text-y 30 :dir :right :blah "abc"}))
+    
     ;; runs when the screen is hidden
     (on-hide [this])
 
@@ -20,29 +20,43 @@
     (on-render [this]
       ;; we use `render` to display a light blue background and black text
       ;; as you can see, everything is specified as a hiccup-style data structure
-      (p/render game
-                ;; (let [new-state])
-        [[:fill {:color "lightblue"}
-          [:rect {:x 0 :y 0 :width 200 :height 200}]]
-         [:fill {:color "black"}
-          [:text {:value "Text should bounce back and forth! :("
-                  :x (:text-x @state)
-                  :y (:text-y @state)
-                  :dir (:dir @state)
-                  :size 16
-                  :font "Georgia"
-                  :style :italic}]]])
+      (p/render
+       game
+       ;; (let [new-state])
+       [[:fill {:color "lightblue"}
+         [:rect {:x 0 :y 0 :width 200 :height 200}]]
+        [:fill {:color "black"}
+         [:text {:value "Text should bounce back and forth! :("
+                 :x (:text-x @state)
+                 :y (:text-y @state)
+                 :dir (:dir @state)
+                 :size 16
+                 :font "Georgia"
+                 :style :italic }]]])
+
+      
       ;; increment the x position of the text so it scrolls to the right
       (let [text-x (:text-x @state)
-            dir (:dir @state)]
-        (if (and (= :right (:dir @state))
-                 (>= text-x 200))
-          (swap! state update :dir :left))
-        ;; (if (and ()))
+            dir (:dir @state) ]
+
+        ;; !!! TODO: why is dir always nil??
+
+        (if (not dir)
+          (swap! state update :dir :right))
+
+        (if (and (= :right dir) (>= text-x 200))
+          ;; text has moved too far right, change direction
+          (swap! state update :dir (constantly :left)))
+
+        (if (and (= :left dir) (<= text-x 0))
+          ;; text has moved too far left, change direction
+          (swap! state update :dir (constantly :right)))
+        
+        ;; move the text in given direction
         (case dir
           :left (swap! state update :text-x dec)
           :right (swap! state update :text-x inc)
-          (swap! state update :text-x inc))))))
+          (swap! state update :text-x dec))))))
 
 (defn start-game []
   (doto game
