@@ -1,5 +1,6 @@
 (ns rum-sample.game
-  (:require [play-cljs.core :as p]))
+  (:require [rum-sample.word-utils :as wutils]
+            [play-cljs.core :as p]))
 
 (defn render-state [state]
   (let [{:keys [text world]} state
