@@ -29,3 +29,14 @@ hint is 'Water' and it applies to two words."
 This way on a single turn they have the chance of getting two of their
 words guessed in one turn.
 
+# Design
+
+We have a 5x5 board.  Each cell contains one of the 25 words.
+
+The game will be played on one laptop shared by the three players.
+
+We have buttons on the bottom that say: "Player 1" "Player 2"
+"Everyone".
+
+When button "Player 1" is pressed their 6 words highlight.  When
+"Everyone" is clicked neither of the players words are highlighted. 
