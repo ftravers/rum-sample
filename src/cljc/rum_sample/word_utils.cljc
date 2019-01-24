@@ -5,15 +5,12 @@
 
 (def game-state
   {:word-count 25
-   :p1-num-words 7
-   :p2-num-words 6
+   :player-num-words [7 6] ;indexed by player ID: 0 or 1
    :state
    (atom
     {:game-words []
-     :p1-words []
-     :p2-words []
-     :p1-guessed-words []
-     :p2-guessed-words []
+     :player-words [[] []] ;indexed by player ID: 0 or 1
+     :player-guessed-words [[] []]
      :guesser-hint {}
      })})
 
@@ -28,6 +25,8 @@
   (-> words/listed 
       (get-n-random-words (-> game-state :word-count))
       (into #{})))
+
+(defn remaining-words )
 
 (defn init-game []
   (let [state (:state game-state)
@@ -47,6 +46,6 @@
 (comment
   (init-game)
 
-(deref (:state game-state))  
+  (deref (:state game-state))  
 
   ) 

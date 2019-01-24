@@ -9,7 +9,7 @@
    :extra-paths ["src/clj"]}
 
   :be-dev
-  {:extra-paths ["test/clj"]}
+  {:extra-paths ["test/clj" "test/cljc"]}
 
   :fe
   {:extra-deps
@@ -25,4 +25,4 @@
 
   :fe-dev
   {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.0"}}
-   :extra-paths ["test/cljs"]}}}
+   :extra-paths ["test/cljs" "test/cljc"]}}}

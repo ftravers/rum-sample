@@ -10,7 +10,7 @@
         strings (apply str strings-seq)
         output (str "(ns rum-sample.words)\n(def listed '(" strings "))")
         _ (println output)
-        _ (spit "src/cljs/rum_sample/words.cljs" output)]))
+        _ (spit "src/cljc/rum_sample/words.cljc" output)]))
 
 #_( (-main)
     (println "----") 
