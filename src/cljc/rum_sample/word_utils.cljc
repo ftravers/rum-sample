@@ -15,18 +15,15 @@
      })})
 
 (defn get-n-random-words [words count]
-  (reduce
-   (fn [acc itm]
-     (conj acc (rand-nth (seq words))))
-   #{} 
-   (range count)))
+  ; Don't pick from (rand-nth (seq words)), because then you may have repetitions of the same word.
+  (take count (shuffle words)))
 
 (defn get-game-words []
   (-> words/listed 
       (get-n-random-words (-> game-state :word-count))
       (into #{})))
 
-(defn remaining-words )
+(defn remaining-words [])
 
 (defn init-game []
   (let [state (:state game-state)
