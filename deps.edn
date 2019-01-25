@@ -19,7 +19,8 @@
     fentontravers/websocket-client {:mvn/version "0.4.8"}
     play-cljs {:mvn/version "1.2.0"}
     datascript {:mvn/version "0.17.1"}}
-   :extra-paths ["src/cljs" "resources" "target"]}
+   :extra-paths ["src/cljs" "resources" "target"]
+   }
 
   :fig {:main-opts ["-m" "figwheel.main"]}
 

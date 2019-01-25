@@ -2,7 +2,8 @@
   (:require
    [rum-sample.view :as v]
    [rum-sample.events :as e]
-   [rum-sample.game :as g]))
+   [rum-sample.word-assoc :as g])
+  )
 
 (e/load-event-watchers)
 (v/main-page)
