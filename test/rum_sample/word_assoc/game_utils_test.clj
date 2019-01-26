@@ -1,4 +1,4 @@
-(ns rum-sample.game-utils-test
+(ns rum-sample.word-assoc.game-utils-test
   (:require  [clojure.test :refer :all]
              [rum-sample.game-utils :as sut]))
 
