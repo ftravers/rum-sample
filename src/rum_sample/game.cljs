@@ -44,7 +44,6 @@
                                     :position [constrained-x-pos constrained-y-pos]}))))))
 
 (defonce game (p/create-game 500 500))
-
 (defonce state (atom {}))
 
 ;; define a screen, where all the action takes place
