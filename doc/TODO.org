@@ -14,7 +14,8 @@
     - current player
   - when one of the two players gets all of their words guessed correctly, then the game is finished and one player is the winner.
     - at this point, we can move back to the 'not-ready' state.
-* TODO move word_utils, word_assoc, word_reader, etc. into word_assoc
+* RESOLVED move word_utils, word_assoc, word_reader, etc. into word_assoc
+  CLOSED: [2019-01-26 Sat 11:21]
 ** TODO move unit tests for word-related logic
 * TODO add remaining game logic
 ** TODO whose turn it is
@@ -22,8 +23,14 @@
 ** TODO transitioning from 'not-ready' to 'ready', keeping track of how many of the three required players there are
 - a 'join' action that connects a player to the game
 * TODO client-side GUI
-** TODO display the 25 words in a grid
-** TODO display the current player
+** RESOLVED render state as a vector of rects, suitable for consumption by play-cljs
+   CLOSED: [2019-01-26 Sat 11:23]
+** RESOLVED display hard-coded squares
+   CLOSED: [2019-01-26 Sat 11:22]
+** TODO [#B] display the 25 words in a grid
+*** TODO place each word into a square
+*** TODO logic to pick the colour for each square based on whether it has been guessed or not
+** TODO [#C] display the current player
 *** TODO if it's the guesser's turn, allow them to enter their guess
 *** TODO if it's selector 1's or selector 2's turn, then allow them to enter a hint
 * TODO move & remove other 'playground' or 'experimental' files, esp. for server-side and db-specific logic
