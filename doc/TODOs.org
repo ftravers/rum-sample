@@ -1,0 +1,36 @@
+* Proof-of-concept
+- game is played on one laptop using cljc files, the REPL, and tests for the game logic
+- Initial state is 'not ready'; there are less than three players.
+- Once three players have joined via WebSocket, the game starts.
+- Each player takes their turn according to the rules in 'codenames.md'
+  - the game's state will be persisted using Datahike
+* What do we need in order to simulate one full round of gameplay?
+- (fn game-state turn)
+  - turn for a selector consists of: player id and hint
+  - turn for a guesser consists of: player id and guess
+  - game state is
+    - vector of 25 words
+    - for selector 1 and selector 2, their vectors of indices into the full vector of available. Also, store the words that have correctly guessed.
+    - current player
+  - when one of the two players gets all of their words guessed correctly, then the game is finished and one player is the winner.
+    - at this point, we can move back to the 'not-ready' state.
+* TODO move word_utils, word_assoc, word_reader, etc. into word_assoc
+** TODO move unit tests for word-related logic
+* TODO add remaining game logic
+** TODO whose turn it is
+** TODO the current guess
+** TODO transitioning from 'not-ready' to 'ready', keeping track of how many of the three required players there are
+- a 'join' action that connects a player to the game
+* TODO client-side GUI
+** TODO display the 25 words in a grid
+** TODO display the current player
+*** TODO if it's the guesser's turn, allow them to enter their guess
+*** TODO if it's selector 1's or selector 2's turn, then allow them to enter a hint
+* TODO move & remove other 'playground' or 'experimental' files, esp. for server-side and db-specific logic
+* WAITING implement server & WebSocket logic
+** Server listens on a WebSocket port
+** Clients connect to WebSocket upon visiting a Web page
+** Data is persisted on the server side and shared with each client
+* Final version
+Players visit a Web site to join a game. Once there are three players the game begins.
+The server provides a WebSocket for all three players to join a single game.

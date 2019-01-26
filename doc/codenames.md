@@ -1,10 +1,10 @@
 # Gameplay
 
 There are three players.  One of the players we call the Guesser.  The
-other two are competing to win.
+other two Selectors are competing to win.
 
 A list of 25 words is randomly created. Six are allocated to each of
-the two competing players.  Only they know which of the 25 words are
+the two Selector players.  Only they know which of the 25 words are
 "theirs".    These two players dont share any words.
 
 On their turn, a player announces a "hint" word and how many of the 25
@@ -18,6 +18,8 @@ only for one of my words.
 When the guesser correctly guesses my word, "boat", then I only have 5
 words left.  The objective of the game is to be the first player to
 have all their words guessed.
+
+The turn order alternates between the Guesser and one of the two Selectors, e.g. Guesser, Selector 1, Guesser, Selector 2.
 
 # Strategy
 
