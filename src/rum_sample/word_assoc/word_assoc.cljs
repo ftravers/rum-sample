@@ -1,5 +1,6 @@
 (ns rum-sample.word-assoc
-  (:require [play-cljs.core :as p]))
+  (:require [play-cljs.core :as p]
+            [rum-sample.word-assoc.game-utils :as gl]))
 
 (def const
   {:board-width 250
@@ -14,7 +15,17 @@
 (defonce state (atom {}))
 
 (defn render-state [state]
-  [[:fill {:color "blue"}
+  [[:fill "blue"
+    [:rect {:x 0
+            :y 0
+            :width 50
+            :height 50}]]
+   [:fill "red"
+    [:rect {:x 50
+            :y 0
+            :width 50
+            :height 50}]]]
+  #_[[:fill {:color "blue"}
     [:rect {:x 0
             :y 0
             :width (:board-width const)
