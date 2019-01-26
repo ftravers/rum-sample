@@ -1,10 +1,11 @@
-(ns rum-sample.word-utils
-  (:require [rum-sample.words :as words]
+(ns rum-sample.word-assoc.word-reader
+  (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.set :as set]))
 
 (def game-state
-  {:word-count 25
+  {:source-words-file "data/1k-words.txt"
+   :word-count 25
    :p1-num-words 7
    :p2-num-words 6
    :state
@@ -17,6 +18,11 @@
      :guesser-hint {}
      })})
 
+(defn get-file-words [file-name]
+  (-> file-name
+      slurp
+      str/split-lines))
+
 (defn get-n-random-words [words count]
   (reduce
    (fn [acc itm]
@@ -25,7 +31,9 @@
    (range count)))
 
 (defn get-game-words []
-  (-> words/listed 
+  (-> game-state
+      :source-words-file
+      get-file-words
       (get-n-random-words (-> game-state :word-count))
       (into #{})))
 
@@ -47,6 +55,4 @@
 (comment
   (init-game)
 
-(deref (:state game-state))  
-
-  ) 
+  )

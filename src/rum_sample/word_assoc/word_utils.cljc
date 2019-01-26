@@ -1,41 +1,29 @@
-(ns rum-sample.word-reader
-  (:require [clojure.java.io :as io]
+(ns rum-sample.word-assoc.word-utils
+  (:require [rum-sample.word-assoc.words :as words]
             [clojure.string :as str]
             [clojure.set :as set]))
 
 (def game-state
-  {:source-words-file "data/1k-words.txt"
-   :word-count 25
-   :p1-num-words 7
-   :p2-num-words 6
+  {:word-count 25
+   :player-num-words [7 6] ;indexed by player ID: 0 or 1
    :state
    (atom
     {:game-words []
-     :p1-words []
-     :p2-words []
-     :p1-guessed-words []
-     :p2-guessed-words []
+     :player-words [[] []] ;indexed by player ID: 0 or 1
+     :player-guessed-words [[] []]
      :guesser-hint {}
      })})
 
-(defn get-file-words [file-name]
-  (-> file-name
-      slurp
-      str/split-lines))
-
 (defn get-n-random-words [words count]
-  (reduce
-   (fn [acc itm]
-     (conj acc (rand-nth (seq words))))
-   #{} 
-   (range count)))
+  ; Don't pick from (rand-nth (seq words)), because then you may have repetitions of the same word.
+  (take count (shuffle words)))
 
 (defn get-game-words []
-  (-> game-state
-      :source-words-file
-      get-file-words
+  (-> words/listed 
       (get-n-random-words (-> game-state :word-count))
       (into #{})))
+
+(defn remaining-words [])
 
 (defn init-game []
   (let [state (:state game-state)
@@ -55,4 +43,6 @@
 (comment
   (init-game)
 
-  )
+  (deref (:state game-state))  
+
+  ) 
