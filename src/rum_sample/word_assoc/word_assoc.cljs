@@ -1,4 +1,4 @@
-(ns rum-sample.word-assoc
+(ns rum-sample.word-assoc.word-assoc
   (:require [play-cljs.core :as p]
             [rum-sample.word-assoc.game-utils :as gl]))
 
@@ -15,12 +15,12 @@
 (defonce state (atom {}))
 
 (defn render-state [state]
-  [[:fill "blue"
+  [[:fill {:color "blue"}
     [:rect {:x 0
             :y 0
             :width 50
             :height 50}]]
-   [:fill "red"
+   [:fill {:color "red"}
     [:rect {:x 50
             :y 0
             :width 50
@@ -54,3 +54,5 @@
   (doto game
     (p/start)
     (p/set-screen main-screen)))
+
+#_(start-game)
