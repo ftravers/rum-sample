@@ -2,7 +2,6 @@
   (:require  [clojure.test :refer :all]
              [rum-sample.game-utils :as sut]))
 
-
 (deftest get-cell-origin-tests
   (testing "given a cell, get it's bottom left coordinate"
     (let [game-state
