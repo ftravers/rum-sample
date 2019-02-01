@@ -16,7 +16,10 @@
 
 (defn get-n-random-words [words count]
   ; Don't pick from (rand-nth (seq words)), because then you may have repetitions of the same word.
-  (take count (shuffle words)))
+  (->> words
+      shuffle
+      (take count)
+      set))
 
 (defn get-game-words []
   (-> words/listed 
@@ -28,10 +31,10 @@
 (defn init-game []
   (let [state (:state game-state)
         game-words (get-game-words)
-        p1-word-count (-> game-state :p1-num-words)
+        p1-word-count (-> game-state :player-num-words first)
         p1-words (get-n-random-words game-words p1-word-count)
         remaining-game-words (set/difference game-words p1-words)
-        p2-word-count (-> game-state :p2-num-words)
+        p2-word-count (-> game-state :player-num-words second)
         p2-words (get-n-random-words remaining-game-words p2-word-count)]
     (reset!
      state
