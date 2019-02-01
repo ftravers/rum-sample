@@ -1,5 +1,6 @@
 (ns rum-sample.word-assoc.helper-test
-  (:require [clojure.test :refer :all]
+  (:require #?(:clj [clojure.test :as t]
+               :cljs [cljs.test :as t :include-macros true])
             [rum-sample.word-assoc.helper :as sut]))
 
 (deftest get-cell-origin-tests
