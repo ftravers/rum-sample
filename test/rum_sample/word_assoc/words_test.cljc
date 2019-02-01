@@ -1,4 +1,4 @@
-(ns rum-sample.words-test
+(ns rum-sample.word-assoc.words-test
   (:require [rum-sample.words :as sut]
             #?(:clj [clojure.test :as t]
                :cljs [cljs.test :as t :include-macros true])))
