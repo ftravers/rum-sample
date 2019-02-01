@@ -36,17 +36,24 @@
         width (/ board-width num-cells-x)
         height (/ board-height num-cells-y)]
     (for [x (range num-cells-x)
-          y (range num-cells-y)]
-      (let [[x-origin y-origin] (get-cell-origin x y game-state)]
+          y (range num-cells-y)
+          :let [[x-origin y-origin] (get-cell-origin x y game-state)]]
+      [[:fill {:color "blue"}
         [:rect {:x x-origin
                 :y y-origin
                 :width width
-                :height height}]))
-    #_(map (fn [x]
-           (let [indices (convert-cell-num-to-cell-coord x game-state)
-                 [x-origin y-origin] (get-cell-origin indices game-state)]
-             [:rect {:x x-origin
-                    :y y-origin
-                    :width width
-                    :height height}]))
-         (range (dec num-cells)))))
+                :height height}]]
+       [:fill {:color "white"}
+        [:text {:value "Hello"
+                :x (+ 10 x-origin)
+                :y (+ 30 y-origin)
+                :size 16
+                :font "Georgia"
+                :style :italic}]]])))
+
+(comment
+  (render-game-cells {:board-width 250
+                      :board-height 250
+                      :num-cells-x 5
+                      :num-cells-y 5})
+  )

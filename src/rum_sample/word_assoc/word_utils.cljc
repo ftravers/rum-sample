@@ -4,7 +4,11 @@
             [clojure.set :as set]))
 
 (def game-state
-  {:word-count 25
+  {:board-width 750
+   :board-height 250
+   :num-cells-x 5
+   :num-cells-y 5
+   :word-count 25
    :player-num-words [7 6] ;indexed by player ID: 0 or 1
    :state
    (atom
@@ -22,7 +26,7 @@
       set))
 
 (defn get-game-words []
-  (-> words/listed 
+  (-> words/listed
       (get-n-random-words (-> game-state :word-count))
       (into #{})))
 
@@ -41,11 +45,12 @@
      (-> @state
          (assoc :game-words game-words)
          (assoc :p1-words p1-words)
-         (assoc :p2-words p2-words)))))
+         (assoc :p2-words p2-words))))
+  game-state)
 
 (comment
   (init-game)
 
-  (deref (:state game-state))  
+  (deref (:state game-state))
 
-  ) 
+  )
