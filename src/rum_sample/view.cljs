@@ -3,26 +3,27 @@
             [rum-sample.db :as db]
             [rum.core :refer [defc] :as rum]))
 
-(defn make-li [users]
-  (map (fn [x] [:li {:key (:name x)}
-                (str (:name x) " - " (:age x))])
-       users))
+;; example of calling a business function based on a UI event
+;(defc ui-update-users-age []
+;  [:input
+;   {:on-blur #(b/update-bobs-age
+;               (-> % .-target .-value))}]) 
 
-(defc ui-update-users-age []
-  [:input
-   {:on-blur #(b/update-bobs-age
-               (-> % .-target .-value))}]) 
+;; example of a reactive component
+;(defc ui-of-age-users < rum/reactive
+;  [conn]
+;  (let [db (rum/react conn)]
+;    [:div
+;     "Of Age Users:"
+;     [:ul
+;      (make-li (b/get-of-age-users))]
+;     (ui-update-users-age)]))
 
-(defc ui-of-age-users < rum/reactive
-  [conn]
-  (let [db (rum/react conn)]
-    [:div
-     "Of Age Users:"
-     [:ul
-      (make-li (b/get-of-age-users))]
-     (ui-update-users-age)]))
+(defc hello-world-component
+  []
+  [:h1 "Word Association Game"])
 
 (defn main-page []
   (rum/mount
-   (ui-of-age-users db/conn)
+   (hello-world-component db/conn)
    js/document.body))

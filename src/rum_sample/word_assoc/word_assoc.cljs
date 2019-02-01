@@ -1,9 +1,11 @@
-(ns rum-sample.word-assoc
-  (:require [play-cljs.core :as p]))
+(ns rum-sample.word-assoc.word-assoc
+  (:require [play-cljs.core :as p]
+            [rum-sample.word-assoc.word-utils :as wu]
+            [rum-sample.word-assoc.game-utils :as gl]))
 
 (def const
-  {:board-width 250
-   :board-height 250
+  {:board-width 750
+   :board-height 750
    :num-cells-x 5
    :num-cells-y 5})
 
@@ -14,11 +16,7 @@
 (defonce state (atom {}))
 
 (defn render-state [state]
-  [[:fill {:color "blue"}
-    [:rect {:x 0
-            :y 0
-            :width (:board-width const)
-            :height (:board-height const)}]]])
+  (gl/render-game-cells state))
 
 (defn update-state [state]
   state)
@@ -28,7 +26,7 @@
     ;; runs when the screen is first shown
     (on-show [this]
       ;; start the state map with...
-      (reset! state {}))
+      (reset! state (wu/init-game)))
 
     ;; runs when the screen is hidden
     (on-hide [this])

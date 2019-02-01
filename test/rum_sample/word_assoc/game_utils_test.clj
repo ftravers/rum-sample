@@ -1,6 +1,26 @@
 (ns rum-sample.word-assoc.game-utils-test
   (:require  [clojure.test :refer :all]
-             [rum-sample.game-utils :as sut]))
+             [rum-sample.word-assoc.game-utils :as sut]))
+
+(deftest render-state-tests
+  (testing "create the data structure for the game"
+    (let [cell-numbers (range 2)
+          game-state {:board-width 100
+                      :board-height 50
+                      :num-cells-x 2
+                      :num-cells-y 1
+                      :visuals [:blue :red]}]
+      (is (= [[:fill "blue"
+               [:rect {:x 0
+                       :y 0
+                       :width 50
+                       :height 50}]]
+              [:fill "red"
+               [:rect {:x 50
+                       :y 0
+                       :width 50
+                       :height 50}]]]
+             (sut/render-game-cells game-state))))))
 
 (deftest get-cell-origin-tests
   (testing "given a cell, get it's bottom left coordinate"
