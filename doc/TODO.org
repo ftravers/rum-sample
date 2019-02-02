@@ -18,6 +18,9 @@
   CLOSED: [2019-01-26 Sat 11:21]
 ** RESOLVED move unit tests for word-related logic
    CLOSED: [2019-02-02 Sat 11:09]
+* TODO Project-level
+** TODO where can we host our application?
+** TODO continuous integration, preferably using CircleCI
 * TODO add remaining game logic
   SCHEDULED: <2019-02-02 Sat>
 ** RESOLVED whose turn it is
