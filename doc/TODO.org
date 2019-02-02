@@ -41,3 +41,5 @@
 * Final version
 Players visit a Web site to join a game. Once there are three players the game begins.
 The server provides a WebSocket for all three players to join a single game.
+* TODO replace play-cljs with Hiccup
+Could render SVG graphics or as html elements with CSS. CSS would give us an opportunity to use Garden.
