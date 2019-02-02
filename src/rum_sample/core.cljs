@@ -6,5 +6,6 @@
   )
 
 (e/load-event-watchers)
-(v/main-page)
+#_(v/main-page)
 (g/start-game)
+(g/show-game-controls)

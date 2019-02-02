@@ -15,7 +15,7 @@
    (atom
     {:game-words []
      :player-words [[] []] ;indexed by player ID: 0 or 1
-     :player-guessed-words [[] []]
+     :player-guessed-words [#{} #{}]
      :guesser-hint {}
      :current-turn :p1
      })})
@@ -56,3 +56,16 @@
   (deref (:state game-state))
 
   )
+
+(defn next-turn! [game-state]
+  (let [state-atom (:state game-state)
+        state @state-atom
+        current-turn (:current-turn state)
+        next (case current-turn
+               :p1 :p1-guesser
+               :p1-guesser :p2
+               :p2 :p2-guesser
+               :p2-guesser :p1)
+        new-state (assoc state :current-turn next)]
+    (reset! state-atom new-state)
+    game-state))

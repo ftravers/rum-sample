@@ -17,4 +17,14 @@
     (testing "Is a set"
       (is (set? random)))))
 
+(t/deftest next-turn-tests
+  (let [game-state {:state (atom {:current-turn :p1})}]
+    (testing "player 1 to guesser"
+      (is (= (-> game-state
+                 sut/next-turn!
+                 :state
+                 deref
+                 :current-turn)
+             :p1-guesser)))))
+
 (t/run-tests)
