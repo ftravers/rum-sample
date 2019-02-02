@@ -9,6 +9,7 @@
    :num-cells-x 5
    :num-cells-y 5
    :word-count 25
+   :player-colors ["red" "blue" "green"]
    :player-num-words [7 6] ;indexed by player ID: 0 or 1
    :state
    (atom
@@ -16,6 +17,7 @@
      :player-words [[] []] ;indexed by player ID: 0 or 1
      :player-guessed-words [[] []]
      :guesser-hint {}
+     :current-turn :p1
      })})
 
 (defn get-n-random-words [words count]

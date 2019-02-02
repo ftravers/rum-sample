@@ -17,10 +17,17 @@
 (defn convert-coord-to-index [num-cells-y x y]
   (+ x (* y num-cells-y)))
 
+(defn color-for-word [word {:keys [p1-words p2-words]} player-colors]
+  (cond
+    (p1-words word) (first player-colors)
+    (p2-words word) (second player-colors)
+    :else (nth player-colors 2)))
+
 (defn render-game-cells [{:keys [num-cells-x
                                  num-cells-y
                                  board-width
-                                 board-height]
+                                 board-height
+                                 player-colors]
                           :as game-state}]
   (let [num-cells (* num-cells-x num-cells-y)
         width (/ board-width num-cells-x)
@@ -30,8 +37,10 @@
           :let [[x-origin y-origin] (get-cell-origin x y game-state)
                 index (convert-coord-to-index num-cells-y x y)
                 state @(:state game-state)
-                word (nth (vec (:game-words state)) index)]]
-      [[:fill {:color "blue"}
+                current-turn (:current-turn state)
+                word (nth (vec (:game-words state)) index)
+                word-color (color-for-word word state player-colors)]]
+      [[:fill {:color word-color}
         [:rect {:x x-origin
                 :y y-origin
                 :width width
