@@ -16,30 +16,56 @@
     - at this point, we can move back to the 'not-ready' state.
 * RESOLVED move word_utils, word_assoc, word_reader, etc. into word_assoc
   CLOSED: [2019-01-26 Sat 11:21]
-** TODO move unit tests for word-related logic
+** RESOLVED move unit tests for word-related logic
+   CLOSED: [2019-02-02 Sat 11:09]
 * TODO add remaining game logic
-** TODO whose turn it is
-** TODO the current guess
-** TODO transitioning from 'not-ready' to 'ready', keeping track of how many of the three required players there are
+  SCHEDULED: <2019-02-02 Sat>
+** RESOLVED whose turn it is
+   CLOSED: [2019-02-02 Sat 11:09]
+** TODO if it's the guesser's turn, let them enter a guess and show the previous player's hint
+** TODO if it's the player's turn, let them enter a hint
+** TODO if the guesser picks a correct word, update the guessed words appropriately
+** TODO ending the game once one of the players has all of their words guessed
+** TODO restarting the game once it's over
+** WAITING transitioning from 'not-ready' to 'ready', keeping track of how many of the three required players there are
+- this last one is waiting for our concept of a multiplayer game
 - a 'join' action that connects a player to the game
 * TODO client-side GUI
+  SCHEDULED: <2019-02-02 Sat>
+** TODO show how many words the previous player's hint applies to
+** TODO show the previous player's hint
 ** RESOLVED render state as a vector of rects, suitable for consumption by play-cljs
    CLOSED: [2019-01-26 Sat 11:23]
 ** RESOLVED display hard-coded squares
    CLOSED: [2019-01-26 Sat 11:22]
-** TODO [#B] display the 25 words in a grid
-*** TODO place each word into a square
-*** TODO logic to pick the colour for each square based on whether it has been guessed or not
-** TODO [#C] display the current player
-*** TODO if it's the guesser's turn, allow them to enter their guess
-*** TODO if it's selector 1's or selector 2's turn, then allow them to enter a hint
-* TODO move & remove other 'playground' or 'experimental' files, esp. for server-side and db-specific logic
-* WAITING implement server & WebSocket logic
-** Server listens on a WebSocket port
-** Clients connect to WebSocket upon visiting a Web page
-** Data is persisted on the server side and shared with each client
+** RESOLVED display the 25 words in a grid
+   CLOSED: [2019-02-02 Sat 11:10]
+*** RESOLVED place each word into a square
+    CLOSED: [2019-02-02 Sat 11:10]
+*** RESOLVED logic to pick the colour for each square based on whether it has been guessed or not
+    CLOSED: [2019-02-02 Sat 11:10]
+** RESOLVED display the current player
+   CLOSED: [2019-02-02 Sat 11:10]
+** RESOLVED [#B] game logic
+   CLOSED: [2019-02-02 Sat 11:19] SCHEDULED: <2019-02-02 Sat>
+*** RESOLVED if it's the guesser's turn, allow them to enter their guess
+    CLOSED: [2019-02-02 Sat 11:19]
+*** RESOLVED if it's selector 1's or selector 2's turn, then allow them to enter a hint
+    CLOSED: [2019-02-02 Sat 11:19]
+* TODO [#D] move & remove other 'playground' or 'experimental' files, esp. for server-side and db-specific logic
+** TODO some cljs files in rum-sample folder
+** TODO refactoring existing code
+   SCHEDULED: <2019-02-02 Sat>
+e.g. change game state to be a single atom, moving deeply-nested logic into shallow groups of functions, and separating the GUI rendering behaviour from the game logic.
+* WAITING [#A] implement server & WebSocket logic
+  SCHEDULED: <2019-02-09 Sat>
+I think we should do this as a group, perhaps as pairs working on the client and server aspects of the connection.
+** TODO Server listens on a WebSocket port
+** TODO Clients connect to WebSocket upon visiting a Web page
+** TODO Data is persisted on the server side and shared with each client
 * Final version
 Players visit a Web site to join a game. Once there are three players the game begins.
 The server provides a WebSocket for all three players to join a single game.
 * TODO replace play-cljs with Hiccup
-Could render SVG graphics or as html elements with CSS. CSS would give us an opportunity to use Garden.
+  SCHEDULED: <2019-02-02 Sat>
+Could render SVG graphics or as html elements style with CSS. CSS would give us an opportunity to use Garden.
