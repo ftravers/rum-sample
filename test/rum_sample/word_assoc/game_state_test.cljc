@@ -6,9 +6,14 @@
 
 (deftest valid-hint-tests
   (testing "invalid hints"
-    (is (not (sut/valid-hint? {::tk/signal [:hint ""]
+    (are [hint] (not (sut/valid-hint? {::tk/signal [:hint hint]
+                                       ::tk/process {:game-words #{"abc" "def"}}}))
+      "" ;; hint must not be empty
+      "abc" ;; cannot name a word
+      "two words") ;; only a single word is allowed
+    #_(is (not (sut/valid-hint? {::tk/signal [:hint ""]
                                ::tk/process {:game-words #{"abc" "def"}}})))
-    (is (not (sut/valid-hint? {::tk/signal [:hint "abc"]
+    #_(is (not (sut/valid-hint? {::tk/signal [:hint "abc"]
                                ::tk/process {:game-words #{"abc" "def"}}}))))
   (is (sut/valid-hint? {::tk/signal [:hint "ghi"]
                         ::tk/process {:game-words #{"abc" "def"}}})))
@@ -29,17 +34,31 @@
       "abc"
       "")))
 
-(deftest state-transition-tests
-  (testing "beginning the game"
-    (is (= (::tk/state (tk/apply-signal sut/codewords [:start]))
-           :p1)))
-  (testing "player one provides a valid hint"
-    (is (= (::tk/state (-> sut/codewords
-                           (tk/apply-signal [:start])
-                           (tk/apply-signal [:hint "hint"])))
-           :p1-guesser)))
-  (testing "player one provides an invalid hint"
-    (is (= (::tk/state (-> sut/codewords
-                           (tk/apply-signal [:start])
-                           (tk/apply-signal [:hint ""])))
-           :p1)))) ;; TODO make assertions about more of the keys and values from the game state
+(defn to-state [state signals]
+  (reduce tk/apply-signal state signals))
+
+(deftest starting-tests
+  (let [started (to-state sut/codewords [[:start]])]
+    (testing "beginning the game"
+     (is (= (::tk/state started)
+            :p1)))))
+
+(deftest from-p1-tests
+  (let [p1-turn (tk/apply-signal sut/codewords [:start])
+        valid-hint (tk/apply-signal p1-turn [:hint "hint"])]
+   (testing "player one provides a valid hint"
+     (is (= (::tk/state valid-hint)
+            :p1-guesser)))
+   (testing "player one provides an invalid hint"
+     (is (= (::tk/state (-> p1-turn
+                            (tk/apply-signal [:hint ""])))
+            :p1)))
+   )) ;; TODO make assertions about more of the keys and values from the game state
+
+(deftest from-p1-guesser-tests
+  (let [p1-guesser (to-state sut/codewords [[:start] [:hint "hint"]])]
+    (testing "the guesser for player one provides a valid guess"
+      (is (= (::tk/state (-> p1-guesser
+                             (update-in [::tk/process :p1-words] #(conj % "foobar"))
+                             (tk/apply-signal [:guess "foobar"])))
+             :p2)))))

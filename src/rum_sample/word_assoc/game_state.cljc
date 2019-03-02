@@ -1,24 +1,10 @@
 (ns rum-sample.word-assoc.game-state
   (:require [rum-sample.word-assoc.word-utils :as wu]
+            [clojure.inspector :as ci]
             [clojure.set :as set]
             [tilakone.core :as tk]))
 
 ;;; actions
-
-(defn valid-hint? [{[_ hint] ::tk/signal
-                    process ::tk/process}]
-  "Evaluates to truthy if the value given by the signal key in the state machine is an allowed hint; falsy otherwise."
-  (let [{:keys [game-words]} process]
-    (not (or (game-words hint)
-             (empty? hint)))))
-
-(defn set-p1-hint [{::tk/keys [signal]
-                    :as fsm}]
-  "Sets the hint for player one to the value given by the signal key in the state machine. Removes error message about the hint, if any."
-  (let [[_ hint] signal]
-    (-> fsm
-        (assoc-in [::tk/process :player-hints 0] hint)
-        (update ::tk/process (fn [p] (dissoc p :hint-error))))))
 
 (defn invalid-hint [{::tk/keys [signal process]
                      :as fsm}]
@@ -28,8 +14,30 @@
     (assoc-in fsm
               [::tk/process :hint-error]
               (cond
+                (re-find #" " hint) "The hint must be a single word."
                 (game-words hint) "The hint must not be one of your words."
-                (empty? hint) "The hint must not be empty."))))
+                (empty? hint) "The hint must not be empty."
+                :else nil))))
+
+(comment
+  (-> codewords
+      (tk/apply-signal [:start])
+      (tk/apply-signal [:hint "two words"])
+      ((juxt :hint-error)))
+  #_["The hint must be a single word."]
+  )
+
+(defn valid-hint? [fsm]
+  "Evaluates to truthy if the value given by the signal key in the state machine is an allowed hint; falsy otherwise."
+  (not (get-in (invalid-hint fsm) [::tk/process :hint-error])))
+
+(defn set-p1-hint [{::tk/keys [signal]
+                    :as fsm}]
+  "Sets the hint for player one to the value given by the signal key in the state machine. Removes error message about the hint, if any."
+  (let [[_ hint] signal]
+    (-> fsm
+        (assoc-in [::tk/process :player-hints 0] hint)
+        (update ::tk/process (fn [p] (dissoc p :hint-error))))))
 
 (defn add-game-words [process]
   "Populates part of the fsm with the initial game state."
@@ -43,6 +51,17 @@
         (assoc :game-words game-words)
         (assoc :p1-words p1-words)
         (assoc :p2-words p2-words))))
+
+(defn p1-guess [{::tk/keys [signal process]
+                 :as fsm}]
+  (println (str "fsm: " fsm))
+  (let [{:keys [p1-words]} process
+        [_ guess] signal]
+    (if (p1-words guess)
+      (-> fsm
+          (update-in [::tk/process :player-guessed-words 0] #(conj % guess))
+          (update-in [::tk/process :current-turn] :p2))
+      fsm)))
 
 ;;; state machine
 
@@ -64,20 +83,28 @@
                       {::tk/on ::tk/_
                        ::tk/actions [:invalid-hint]}]}
    ;; then the guesser makes their first guess
-   {::tk/name :p1-guesser}])
+   {::tk/name :p1-guesser
+    ::tk/transitions [{::tk/on :guess
+                       ::tk/action [:p1-guess]
+                       ::tk/to :p2}]}
+   {::tk/name :p2}])
 
 ;; this is the top-level configuration and state for our state machine.
 (def codewords
   {::tk/states  game-states
    ::tk/action! (fn [{::tk/keys [action] :as fsm}]
+                  (println {:action action})
                   (case action
                     :add-game-words (update fsm ::tk/process add-game-words)
                     :invalid-hint (invalid-hint fsm)
-                    :set-p1-hint (set-p1-hint fsm)))
+                    :set-p1-hint (set-p1-hint fsm)
+                    :p1-guess (p1-guess fsm)))
    ::tk/state   :before-start
    :game-words #{}
    ::tk/guard? (fn [{::tk/keys [guard] :as fsm}] (guard fsm))
-   ::tk/match? (fn [{::tk/keys [signal on]}] (-> signal first (= on)))
+   ::tk/match? (fn [{::tk/keys [signal on]}] (do #_(println {:signal signal
+                                                           :on on})
+                                                 (-> signal first (= on))))
    :player-hints []
    :player-words [[] []]
    :player-guessed-words [#{} #{}]
@@ -85,5 +112,28 @@
 
 (comment
   (-> codewords
+      ::tk/state)
+;; :before-start
+
+  (-> codewords
       (tk/apply-signal [:start])
-      (tk/apply-signal [:hint ""]))) ;; giving an empty hint shouldn't transition to guesser's turn
+      ((juxt ::tk/state :current-turn :game-words)))
+#_[:p1 :p1 #{"stop" "properties" "space" "google" "call" "anti" "learning" "copy" "british" "credit" "professional" "months" "song" "church" "taking" "feedback" "ideas" "changes" "built" "password" "career" "michael" "hill" "enter" "near"}]
+
+  (-> codewords
+      (tk/apply-signal [:start])
+      (tk/apply-signal [:hint ""])
+      ((juxt :hint-error ::tk/state)))
+#_["The hint must not be empty." :p1]
+
+(-> codewords
+    (tk/apply-signal [:start])
+    (tk/apply-signal [:hint "hint"])
+    ((juxt :hint-error ::tk/state :player-hints)))
+#_[nil :p1-guesser ["valid hint!"]]
+
+(let [hinted (reduce tk/apply-signal codewords [[:start] [:hint "something"]])
+      updated (update-in hinted [::tk/process :p1-words] #(conj % "foobar"))]
+  (-> (reduce tk/apply-signal updated [[:guess "foobar"]])
+      ((juxt :player-guessed-words :current-turn))))
+  )
