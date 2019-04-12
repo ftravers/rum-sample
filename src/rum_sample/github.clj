@@ -6,7 +6,6 @@
    [clj-http.client :as client]
    [clojure.test :as tst :refer [is]]))
 
-;; (tst/run-tests 'rum-sample.github)
 (defn get-json
   ([url header]
    (json/read-str (:body (client/get url header)) :key-fn keyword))
@@ -26,7 +25,13 @@
        reverse))
 
 (defn commits-extract-keys [com]
-  (map (juxt :total (comp :login :author)) com))
+  (map
+   (fn [c]
+     (let [[commit-count username]
+           ((juxt :total (comp :login :author)) c)]
+       {:username username
+        :number_of_commits commit-count}))
+   com))
 
 (defn get-repos!
   [repos-per-page]
@@ -39,12 +44,15 @@
 (defn select-keys* [m paths]
   (into {} (map (fn [p] [(last p) (get-in m p)]) paths)))
 
-(defn mod-data [m]
+(defn mod-repo-data [m]
   (-> m
       (update-in [:full_name] #(last (c-str/split % #"/")))
-      (c-set/rename-keys {:full_name :repo :login :owner :stargazers_count :stars})))
+      (c-set/rename-keys {:full_name :repo
+                          :login :owner
+                          :stargazers_count :stars})
+      (assoc :repository_name (:full_name m))))
 
-(defn extract-data [m]
+(defn extract-repo-data [m]
   (select-keys* m [[:stargazers_count] [:full_name] [:owner :login]]))
 
 (defn get-commits-2!
@@ -52,23 +60,26 @@
    (fn []
      (is
       (=
-       '([23 "bbatsov"] [13 "uvtc"])
-
+       {:repo "clojure-style-guide",
+        :owner "bbatsov",
+        :stars 3150,
+        :commits
+        ({:username "bbatsov", :number_of_commits 22}
+         {:username "uvtc", :number_of_commits 13})}
        (get-commits-2!
         {:repo "clojure-style-guide"
          :owner "bbatsov"
          :stars 3150}
         2)
-
        )))}
-  [repo-m count]
-  (let [name-owner (-> repo-m ((juxt :repo :owner)))
+  [repo-m commit-count]
+  (let [repo-n-owner (-> repo-m ((juxt :repo :owner)))
         commits (->>
-                 name-owner
+                 repo-n-owner
                  (apply get-commits!)
-                 (take count))]
-    (commits-extract-keys commits)
-    ))
+                 (take commit-count))
+        clean-commits (commits-extract-keys commits)]
+    (assoc repo-m :commits clean-commits)))
 
 (defn get-user [username]
   {:test (fn []
@@ -85,95 +96,60 @@
       {:username username}
       {:email email})))
 
-(defn repo-com-usr
+(defn add-email
   {:test
    (fn []
      (is
       (=
-       (repo-com-user )
-       )))}
-  [{:keys [repo owner stars] :as rp}
-   commit-count]
-  (let [commits
-        (get-commits-2! rp commit-count)]
-    (map (fn [[cmt-cnt cmt-username]]
-           (merge {:number_of_commits cmt-cnt}
-                  (get-user cmt-username)))
-         commits)
-    ;; {:repository_name repo
-    ;;  :stargazers_count stars
-    ;;  :authors}
-    ))
+       {:repo "clojure-style-guide",
+        :owner "bbatsov",
+        :stars 3150,
+        :commits
+        '({:number_of_commits 22, :email "bozhidar@batsov.com"}
+          {:number_of_commits 13, :email "jgabriele@fastmail.fm"})}
+      
+       (add-email
+        {:repo "clojure-style-guide",
+         :owner "bbatsov",
+         :stars 3150,
+         :commits
+         '({:username "bbatsov", :number_of_commits 22}
+           {:username "uvtc", :number_of_commits 13})}))))}
+
+  [{:keys [repo stars commits] :as rps}]
+  (let [cmt-w-email
+        (map (fn [commit]
+               (merge
+                (dissoc commit :username)
+                (get-user (:username commit))))
+             commits)]
+    (assoc rps :commits cmt-w-email)))
+
+(defn unbounce-problem
+  {:test
+   (fn []
+     (is (=
+          (unbounce-problem 2 2))
+         ))}
+  [repo-count commits-per-repo-count]
+  (->>
+   (get-repos! repo-count)
+   :items
+   (map #(-> %
+             extract-repo-data
+             mod-repo-data
+             (get-commits-2! commits-per-repo-count)
+             (dissoc :repo)
+             (dissoc :owner)))))
 
 (comment
   (def rps (get-repos! 2))
   (def itms (:items rps))
   (def clean-repos
     (map #(-> %
-              extract-data
-              mod-data
+              extract-repo-data
+              mod-repo-data
               (get-commits-2! 2))
-         itms)
-
-    )
-  
-  ;; ({:repo "clojure", :owner "clojure", :stars 7669}
-  ;;  {:repo "clojure-style-guide", :owner "bbatsov", :stars 3150})
-
-
+         itms))
+  (def final (unbounce-problem 2 2))
   )
-
-
-
-
-
-
-
-
-
-;; ```json
-;; [
-;;   {
-;;     "repository_name": "clojure/clojure",
-;;     "stargazers_count": 50,
-;;     "authors": [
-;;       {"email": "...", "number_of_commits": 1000},
-;;       {"email": "...", "number_of_commits": 999},
-;;       // ...
-;;     ]
-;;   },
-;;   {
-;;     "repository_name": "stuartsierra/component",
-;;     "stargazers_count": 49,
-;;     "authors": [
-;;       {"email": "...", "number_of_commits": 531},
-;;       {"email": "...", "number_of_commits": 921},
-;;       {"email": "...", "number_of_commits": 300},
-;;       // ...
-;;     ]
-;;   }
-;;   // , ...
-;; ]
-;; ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
