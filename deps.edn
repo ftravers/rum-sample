@@ -1,6 +1,8 @@
 {:paths ["src"]
 
- :deps {metosin/tilakone {:mvn/version "0.0.4"}}
+ :deps {metosin/tilakone {:mvn/version "0.0.4"}
+        clj-http {:mvn/version "3.9.1"}
+        org.clojure/data.json {:mvn/version "0.2.6"}}
 
  :aliases
  {:be

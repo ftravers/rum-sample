@@ -112,28 +112,34 @@
 
 (comment
   (-> codewords
-      ::tk/state)
-;; :before-start
+      ::tk/state) 
 
   (-> codewords
       (tk/apply-signal [:start])
-      ((juxt ::tk/state :current-turn :game-words)))
-#_[:p1 :p1 #{"stop" "properties" "space" "google" "call" "anti" "learning" "copy" "british" "credit" "professional" "months" "song" "church" "taking" "feedback" "ideas" "changes" "built" "password" "career" "michael" "hill" "enter" "near"}]
-
+      (select-keys [::tk/state :current-turn :game-words]))
+{:tilakone.core/state :p1,
+ :current-turn :p1,
+ :game-words
+ #{"mortgage" "february" "parts" "smith" "publications" "word" "cart"
+   "files" "materials" "connection" "cause" "casino" "knowledge"
+   "known" "until" "population" "publisher" "basis" "voice" "kingdom"
+   "html" "evidence" "purchase" "conditions" "idea"}}
   (-> codewords
       (tk/apply-signal [:start])
       (tk/apply-signal [:hint ""])
       ((juxt :hint-error ::tk/state)))
-#_["The hint must not be empty." :p1]
+  ;; ["The hint must not be empty." :p1]
 
-(-> codewords
-    (tk/apply-signal [:start])
-    (tk/apply-signal [:hint "hint"])
-    ((juxt :hint-error ::tk/state :player-hints)))
-#_[nil :p1-guesser ["valid hint!"]]
+  (-> codewords
+      (tk/apply-signal [:start])
+      (tk/apply-signal [:hint "hint"])
+      ((juxt :hint-error ::tk/state :player-hints)))
+  ;; [nil :p1-guesser ["hint"]]
 
-(let [hinted (reduce tk/apply-signal codewords [[:start] [:hint "something"]])
-      updated (update-in hinted [::tk/process :p1-words] #(conj % "foobar"))]
-  (-> (reduce tk/apply-signal updated [[:guess "foobar"]])
-      ((juxt :player-guessed-words :current-turn))))
-  )
+  (let [hinted (reduce tk/apply-signal codewords [[:start] [:hint "something"]])
+        updated (update-in hinted [::tk/process :p1-words] #(conj % "foobar"))]
+    (-> (reduce tk/apply-signal updated [[:guess "foobar"]])
+        ((juxt :player-guessed-words :current-turn)))))
+
+
+
