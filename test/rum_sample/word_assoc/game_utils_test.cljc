@@ -1,5 +1,6 @@
 (ns rum-sample.word-assoc.game-utils-test
-  (:require  [clojure.test :refer :all]
+  (:require #?(:clj [clojure.test :as t]
+               :cljs [cljs.test :as t :include-macros true])
              [rum-sample.word-assoc.game-utils :as sut]))
 
 (deftest render-state-tests

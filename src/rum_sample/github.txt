@@ -1,0 +1,66 @@
+## Description
+
+Use the [GitHub API](https://developer.github.com/v3/) to implement a function
+that process repository statistics of Clojure projects; this function will
+receive 2 arguments:
+
+  - count of repositories to process
+  - count of commits per repository to process
+
+This function must return a list of repositories ordered by number of stargazers
+with:
+
+  - repository name (in the format `organization/repository-name`)
+  - stargazers count
+  - authors and number of commits like:
+    - email
+    - number of commits
+
+*(Example output to follow)*
+
+*Important*: Be mindful on the API rate limits when doing this exercises
+
+We believe this exercise should take from 1 to 2 hours.
+
+## Example
+
+With Javascript[1], the signature would be something like:
+
+```javascript
+function unbounceProblem(repoCount, commitsPerRepoCount) {
+  // implementation
+}
+```
+and it should return a JSON output like:
+
+```json
+[
+  {
+    "repository_name": "clojure/clojure",
+    "stargazers_count": 50,
+    "authors": [
+      {"email": "...", "number_of_commits": 1000},
+      {"email": "...", "number_of_commits": 999},
+      // ...
+    ]
+  },
+  {
+    "repository_name": "stuartsierra/component",
+    "stargazers_count": 49,
+    "authors": [
+      {"email": "...", "number_of_commits": 531},
+      {"email": "...", "number_of_commits": 921},
+      {"email": "...", "number_of_commits": 300},
+      // ...
+    ]
+  }
+  // , ...
+]
+```
+
+Some notes around ordering:
+
+* If two or more repositories have the same number of stargazers, order
+alphabetically by repository name.
+
+* If two authors have the same number of commits, order alphabetically by email.

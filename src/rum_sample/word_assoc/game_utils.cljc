@@ -17,10 +17,20 @@
 (defn convert-coord-to-index [num-cells-y x y]
   (+ x (* y num-cells-y)))
 
+(defn color-for-word [word {:keys [p1-words
+                                   p2-words
+                                   current-turn]}
+                      player-colors]
+  (cond
+    (and (p1-words word) (= current-turn :p1)) (first player-colors)
+    (and (p2-words word) (= current-turn :p2)) (second player-colors)
+    :else (nth player-colors 2)))
+
 (defn render-game-cells [{:keys [num-cells-x
                                  num-cells-y
                                  board-width
-                                 board-height]
+                                 board-height
+                                 player-colors]
                           :as game-state}]
   (let [num-cells (* num-cells-x num-cells-y)
         width (/ board-width num-cells-x)
@@ -30,13 +40,15 @@
           :let [[x-origin y-origin] (get-cell-origin x y game-state)
                 index (convert-coord-to-index num-cells-y x y)
                 state @(:state game-state)
-                word (nth (vec (:game-words state)) index)]]
-      [[:fill {:color "blue"}
+                word (nth (vec (:game-words state)) index)
+                word-color (color-for-word word state player-colors)
+                is-guessed (contains? (apply clojure.set/union (:player-guessed-words state)) word)]]
+      [[:fill {:color word-color}
         [:rect {:x x-origin
                 :y y-origin
                 :width width
                 :height height}]]
-       [:fill {:color "white"}
+       [:fill {:color (if is-guessed "black" "white")}
         [:text {:value word
                 :x (+ 10 x-origin)
                 :y (+ 30 y-origin)
