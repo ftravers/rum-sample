@@ -1,10 +1,18 @@
 (ns rum-sample.github
   (:require
    [clojure.set :as c-set]
+   [clojure.core.async :refer [<!! timeout]]
    [clojure.string :as c-str]
    [clojure.data.json :as json]
    [clj-http.client :as client]
    [clojure.test :as tst :refer [is]]))
+
+(defn rate-limited
+  [f-seq wait-ms]
+  (map
+   (fn [api]
+     (<!! (timeout wait-ms))
+     (api))))
 
 (defn get-json
   ([url header]
@@ -142,14 +150,5 @@
              (dissoc :repo)
              (dissoc :owner)))))
 
-(comment
-  (def rps (get-repos! 2))
-  (def itms (:items rps))
-  (def clean-repos
-    (map #(-> %
-              extract-repo-data
-              mod-repo-data
-              (get-commits-2! 2))
-         itms))
-  (def final (unbounce-problem 2 2))
-  )
+
+

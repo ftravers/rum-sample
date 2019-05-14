@@ -64,3 +64,15 @@ Some notes around ordering:
 alphabetically by repository name.
 
 * If two authors have the same number of commits, order alphabetically by email.
+
+
+======================================================================
+Breakdown into sub problems.
+
+
+1. you are hitting an api that returns a result set.  There is a max
+size for the result set, in our case 100 records.  If we need to fetch
+400 records, how can we elegantly do that.
+
+2. we need to throttle our requests.  Anonymous requests are limited
+to 60/hour.  How can this be elegantly modeled too.
